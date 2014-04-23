@@ -1,0 +1,30 @@
+{
+  "name": "rost",
+  "version": "0.1.0",
+  "description": "Yet another amazing AngularJS app",
+  "keywords": [
+    "angular"
+  ],
+  "homepage": "https://github.com/mgcrea/rost",
+  "bugs": "https://github.com/mgcrea/rost/issues",
+  "author": {
+    "name": "Olivier Louvignes",
+    "email": "olivier@mg-crea.com",
+    "url": "https://github.com/mgcrea"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/mgcrea/rost.git"
+  },
+  "licenses": [
+    {
+      "type": "MIT"
+    }
+  ],
+  "dependencies": {
+    "bootstrap": "~3.1.0",
+    "angular-animate": "~1.2.10",
+    "angular-route": "~1.2.10",
+    "angular": "~1.2.10"
+  }
+}
