@@ -1,6 +1,6 @@
 'use strict';
 
-angular.module('mgcrea.Rost')
+angular.module('RostRecept.Main')
 
   .directive('ngHelloWorld', function() {
 

@@ -1,6 +1,6 @@
 'use strict';
 
-angular.module('mgcrea.Rost', ['ngAnimate', 'ngRoute', 'mgcrea.ngStrap'])
+angular.module('RostRecept.Main', ['ngAnimate', 'ngRoute', 'RostRecept.ngStrap'])
 
   .constant('version', 'v0.1.0')
 
