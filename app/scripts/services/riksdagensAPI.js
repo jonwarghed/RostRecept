@@ -18,8 +18,9 @@ riksdagensapi.factory('voteService', ['$http', '$q', function ($http, $q) {
             var promise = $http.jsonp(utskottsurl).success(function (data) {
                 var utskottsforslag = data.utskottsforslag.dokutskottsforslag.utskottsforslag.filter(function (element) {
                     return element.punkt == votering.punkt;
-                })
-                return utskottsforslag;
+                });
+                deferred.resolve(utskottsforslag);
+
             });
             //This is a hack due to incorrect callback method should be the above if correct
             window.rdjsonp = function (data) {
@@ -29,7 +30,15 @@ riksdagensapi.factory('voteService', ['$http', '$q', function ($http, $q) {
                 deferred.resolve(utskottsforslag);
             };
             return deferred.promise;
-        }
+        };
+      function cleanforslag (forslag) {
+        //var cleanCodes = forslag.forslag.match(/bifaller|avslår|201\d\/\d\d:\S*|yttrande(na)? \d/g, '');
+//          console.log(forslag);
+        var cleanCodes = forslag.forslag.match(/201\d\/\d\d:\S*/g, '');
+        var clean = forslag.forslag.replace(/av [^\)]*\)\s?/g, '').replace(/\s,\s/g, ', ');
+        forslag.cleanforslag = clean;
+        forslag.cleanCodes = cleanCodes;
+    };
 
        return {
             years: ['2013%2F14', '2012%2F13', '2011%2F12'],
@@ -40,7 +49,7 @@ riksdagensapi.factory('voteService', ['$http', '$q', function ($http, $q) {
                 var promise = $http.jsonp('http://data.riksdagen.se/voteringlista/?rm=' + rm + '&sz=5&utformat=jsonp&gruppering=bet&callback=JSON_CALLBACK').success(function (data) {
                     data.voteringlista.votering.forEach(function (elem) {
                         self.votering.push(elem);
-                    })
+                    });
                     return data.voteringlista;
                 });
                 return promise;
@@ -60,16 +69,21 @@ riksdagensapi.factory('voteService', ['$http', '$q', function ($http, $q) {
             {
                 //Select a random vote
                 var singlevotering = votering[Math.floor(Math.random() * this.votering.length)];
-                var p = fetchMotion(singlevotering).then(function(motion)
+                return fetchMotion(singlevotering).then(function(motion)
                 {
-                    console.log('motion is: ' + motion);
                     return fetchUtskottsforslag(motion,singlevotering)
                 }).then(function(forslag)
                 {
-                    console.log(forslag);
-                    return { summary: forslag.rubrik, voteringid : forslag.voteringid};
+                    var voteringDivided = [];
+                    forslag.forEach(function(f)
+                    {
+                        cleanforslag(f);
+                        voteringDivided.push({ summary: f.rubrik, forslag: f.cleanforslag, forslagurl : [], voteringid : f.votering_id, votering_url_xml: f.votering_url_xml});
+                    });
+                    return voteringDivided;
+
                 });
-                return p;
+
             }
             };
         }
