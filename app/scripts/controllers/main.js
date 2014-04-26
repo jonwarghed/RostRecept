@@ -1,6 +1,6 @@
 'use strict';
 
-angular.module('RostRecept.Main')
+angular.module('RostRecept')
 
   .controller('MainCtrl', function($scope, $location, version) {
     $scope.$path = $location.path.bind($location);

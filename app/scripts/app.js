@@ -1,9 +1,7 @@
 'use strict';
 
-angular.module('RostRecept.Main', ['ngAnimate', 'ngRoute', 'RostRecept.ngStrap'])
-
+angular.module('RostRecept', ['ngAnimate', 'ngRoute'])
   .constant('version', 'v0.1.0')
-
   .config(function($locationProvider, $routeProvider) {
 
     $locationProvider.html5Mode(false);

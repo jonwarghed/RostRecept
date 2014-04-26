@@ -1,5 +1,5 @@
 'use strict';
-var riksdagensapi = angular.module('RostRecept.riksdagenAPI',[]);
+var riksdagensapi = angular.module('RostRecept');
 riksdagensapi.factory('voteService', ['$http', '$q', function ($http, $q) {
        var votering = [];
        function fetchMotion(votering)
@@ -8,14 +8,14 @@ riksdagensapi.factory('voteService', ['$http', '$q', function ($http, $q) {
                return result.data.dokumentlista.dokument;
            });
 
-       };
+       }
 
         function fetchUtskottsforslag(motion,votering) {
             var deferred = $q.defer();
             //there is a URL to the dokument but make it JSONP
             var url = motion.dokumentstatus_url_xml.replace('.xml', '.jsonp');
             var utskottsurl = url.replace('dokumentstatus', 'utskottsforslag');
-            var promise = $http.jsonp(utskottsurl).success(function (data) {
+            $http.jsonp(utskottsurl).success(function (data) {
                 var utskottsforslag = data.utskottsforslag.dokutskottsforslag.utskottsforslag.filter(function (element) {
                     return element.punkt == votering.punkt;
                 });
@@ -31,15 +31,13 @@ riksdagensapi.factory('voteService', ['$http', '$q', function ($http, $q) {
                 deferred.resolve(utskottsforslag[0]);
             };
             return deferred.promise;
-        };
+        }
       function cleanforslag (forslag) {
         //var cleanCodes = forslag.forslag.match(/bifaller|avslår|201\d\/\d\d:\S*|yttrande(na)? \d/g, '');
-        console.log(forslag);
-        var cleanCodes = forslag.forslag.match(/201\d\/\d\d:\S*/g, '');
-        var clean = forslag.forslag.replace(/av [^\)]*\)\s?/g, '').replace(/\s,\s/g, ', ');
-        forslag.cleanforslag = clean;
-        forslag.cleanCodes = cleanCodes;
-    };
+
+          forslag.cleanCodes = forslag.forslag.match(/201\d\/\d\d:\S*/g, '');
+          forslag.cleanforslag = forslag.forslag.replace(/av [^\)]*\)\s?/g, '').replace(/\s,\s/g, ', ');
+        }
 
        return {
             years: ['2013%2F14', '2012%2F13', '2011%2F12'],
@@ -68,14 +66,15 @@ riksdagensapi.factory('voteService', ['$http', '$q', function ($http, $q) {
             fetchVote: function()
             {
                 //Select a random vote
-                var singlevotering = votering[Math.floor(Math.random() * this.votering.length)];
+                var singlevotering = votering.splice(Math.floor(Math.random() * this.votering.length),1)[0];
+
                 return fetchMotion(singlevotering).then(function(motion)
                 {
                     return fetchUtskottsforslag(motion,singlevotering)
                 }).then(function(forslag)
                 {
                         cleanforslag(forslag);
-                        return { summary: forslag.rubrik, forslag: forslag.cleanforslag, forslagurl : [], voteringid : forslag.votering_id, votering_url_xml: forslag.votering_url_xml};
+                        return { summary: forslag.rubrik, forslag: forslag.cleanforslag, forslagurl : [], voteringid : forslag.votering_id, votering_url_xml: forslag.votering_url_xml, orginalvotering : singlevotering};
                 });
             }
             };

@@ -1,6 +1,6 @@
 'use strict';
 
-angular.module('RostRecept.Main')
+angular.module('RostRecept')
 
   .filter('time', function() {
     return function(obj) {

@@ -3,20 +3,27 @@
  */
 'use strict';
 
-angular.module('RostRecept.controllers',['RostRecept.riksdagenAPI'])
-    .controller('VoteCtrl', ['$scope', 'riksdagensAPI', function ($scope, riksdagensAPI) {
-        var p  = riksdagensAPI.init();
-
-        p.then(function()
+angular.module('RostRecept').controller('voteCtrl', ['$scope', 'voteService', function ($scope, voteService) {
+        voteService.init().then(function(){
+        voteService.fetchVote().then(function(result)
         {
-            $scope.vote = riksdagensAPI.fetchVote();
+            $scope.vote = result;
+        });
         });
 
-        $scope.agreeWithVote = function () {
+        function getnextvote()
+        {
+            voteService.fetchVote().then(function(result)
+            {
+                $scope.vote = result;
+            });
+        }
 
+        $scope.agreeWithVote = function () {
+            getnextvote();
         };
 
         $scope.disagreeWithVote = function () {
-
+            getnextvote();
         };
     }]);
