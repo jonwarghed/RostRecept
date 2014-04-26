@@ -208,13 +208,17 @@
                 voteService.years = ['singleyear'];
                 voteService.init();
                 $httpBackend.flush();
-                var vote;
+                var votes;
                 voteService.fetchVote().then(function(voteResult){
-                    vote = voteResult;
+                    votes = voteResult;
                 });
                 $httpBackend.flush();
-                expect(vote).toBeDefined();
+                console.log(votes);
+                expect(votes).toBeDefined();
+                var vote = votes.pop();
                 expect(vote.summary).toBeDefined();
+                expect(vote.forslag).toBeDefined();
+                expect(vote.forslagurl).toBeDefined();
                 expect(vote.voteringid).toBeDefined();
             }));
         });
