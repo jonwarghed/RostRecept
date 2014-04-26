@@ -2,11 +2,11 @@
 'use strict';
 
 (function () {
-    describe('Queries Riksdagen open API', function () {
-        describe('Fetch a list of current votering', function () {
+    describe('Service: RiksdagensAPI', function () {
+        describe('Queries riksdagen API', function () {
             var $httpBackend;
 
-            beforeEach(module('RostRecept.riksdagenAPI'));
+            beforeEach(module('RostRecept'));
             beforeEach(inject(function (_$httpBackend_) {
                 $httpBackend = _$httpBackend_;
                 $httpBackend.whenJSONP(/voteringlista/).respond(200, { "voteringlista": { "votering": [
@@ -208,14 +208,13 @@
                 voteService.years = ['singleyear'];
                 voteService.init();
                 $httpBackend.flush();
-                var votes;
+                var vote;
                 voteService.fetchVote().then(function(voteResult){
-                    votes = voteResult;
+                    vote = voteResult;
                 });
                 $httpBackend.flush();
-                console.log(votes);
-                expect(votes).toBeDefined();
-                var vote = votes.pop();
+
+                expect(vote).toBeDefined();
                 expect(vote.summary).toBeDefined();
                 expect(vote.forslag).toBeDefined();
                 expect(vote.forslagurl).toBeDefined();
