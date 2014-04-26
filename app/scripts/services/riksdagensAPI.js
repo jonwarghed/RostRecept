@@ -19,7 +19,7 @@ riksdagensapi.factory('voteService', ['$http', '$q', function ($http, $q) {
                 var utskottsforslag = data.utskottsforslag.dokutskottsforslag.utskottsforslag.filter(function (element) {
                     return element.punkt == votering.punkt;
                 });
-                deferred.resolve(utskottsforslag);
+                deferred.resolve(utskottsforslag[0]);
 
             });
             //This is a hack due to incorrect callback method should be the above if correct
@@ -27,13 +27,14 @@ riksdagensapi.factory('voteService', ['$http', '$q', function ($http, $q) {
                 var utskottsforslag = data.utskottsforslag.dokutskottsforslag.utskottsforslag.filter(function (element) {
                     return element.punkt == votering.punkt;
                 });
-                deferred.resolve(utskottsforslag);
+                //There can only be one!
+                deferred.resolve(utskottsforslag[0]);
             };
             return deferred.promise;
         };
       function cleanforslag (forslag) {
         //var cleanCodes = forslag.forslag.match(/bifaller|avslår|201\d\/\d\d:\S*|yttrande(na)? \d/g, '');
-//          console.log(forslag);
+        console.log(forslag);
         var cleanCodes = forslag.forslag.match(/201\d\/\d\d:\S*/g, '');
         var clean = forslag.forslag.replace(/av [^\)]*\)\s?/g, '').replace(/\s,\s/g, ', ');
         forslag.cleanforslag = clean;
@@ -46,13 +47,12 @@ riksdagensapi.factory('voteService', ['$http', '$q', function ($http, $q) {
             getVotesForYear: function (rm)
             {
                 var self = this;
-                var promise = $http.jsonp('http://data.riksdagen.se/voteringlista/?rm=' + rm + '&sz=5&utformat=jsonp&gruppering=bet&callback=JSON_CALLBACK').success(function (data) {
+                return $http.jsonp('http://data.riksdagen.se/voteringlista/?rm=' + rm + '&sz=5&utformat=jsonp&gruppering=bet&callback=JSON_CALLBACK').success(function (data) {
                     data.voteringlista.votering.forEach(function (elem) {
                         self.votering.push(elem);
                     });
                     return data.voteringlista;
                 });
-                return promise;
             },
             init: function ()
             {
@@ -74,16 +74,9 @@ riksdagensapi.factory('voteService', ['$http', '$q', function ($http, $q) {
                     return fetchUtskottsforslag(motion,singlevotering)
                 }).then(function(forslag)
                 {
-                    var voteringDivided = [];
-                    forslag.forEach(function(f)
-                    {
-                        cleanforslag(f);
-                        voteringDivided.push({ summary: f.rubrik, forslag: f.cleanforslag, forslagurl : [], voteringid : f.votering_id, votering_url_xml: f.votering_url_xml});
-                    });
-                    return voteringDivided;
-
+                        cleanforslag(forslag);
+                        return { summary: forslag.rubrik, forslag: forslag.cleanforslag, forslagurl : [], voteringid : forslag.votering_id, votering_url_xml: forslag.votering_url_xml};
                 });
-
             }
             };
         }
