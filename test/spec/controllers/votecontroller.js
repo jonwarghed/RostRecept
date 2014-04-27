@@ -76,7 +76,7 @@
                 expect($scope.vote).toBeDefined();
                 var newvote = $scope.vote;
 
-                expect(newvote).toNotEqual(oldvote);
+                expect(newvote.orginalvotering).toNotEqual(oldvote.orginalvotering);
             });
 
 

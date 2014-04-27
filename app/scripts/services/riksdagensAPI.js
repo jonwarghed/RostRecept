@@ -40,7 +40,10 @@ riksdagensapi.factory('voteService', ['$http', '$q', function ($http, $q) {
         }
 
        return {
-            years: ['2013%2F14', '2012%2F13', '2011%2F12'],
+            //Production value
+            //years: ['2013%2F14', '2012%2F13', '2011%2F12'],
+            //Testing value
+            years: ['2013%2F14'],
             votering: votering,
             getVotesForYear: function (rm)
             {
@@ -66,6 +69,7 @@ riksdagensapi.factory('voteService', ['$http', '$q', function ($http, $q) {
             fetchVote: function()
             {
                 //Select a random vote
+
                 var singlevotering = votering.splice(Math.floor(Math.random() * this.votering.length),1)[0];
 
                 return fetchMotion(singlevotering).then(function(motion)
@@ -74,7 +78,7 @@ riksdagensapi.factory('voteService', ['$http', '$q', function ($http, $q) {
                 }).then(function(forslag)
                 {
                         cleanforslag(forslag);
-                        return { summary: forslag.rubrik, forslag: forslag.cleanforslag, forslagurl : [], voteringid : forslag.votering_id, votering_url_xml: forslag.votering_url_xml, orginalvotering : singlevotering};
+                        return { summary: forslag.rubrik, forslag: forslag.cleanforslag, forslagurl : [], voteringid : forslag.votering_id, votering_url_xml: forslag.votering_url_xml, orginalvotering : singlevotering.forslagspunkt};
                 });
             }
             };
