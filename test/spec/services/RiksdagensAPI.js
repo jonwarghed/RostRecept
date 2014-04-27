@@ -3,7 +3,7 @@
 
 (function () {
     describe('Service: RiksdagensAPI', function () {
-        describe('Queries riksdagen API', function () {
+        describe('Queries riksdagen API for votes', function () {
             var $httpBackend;
 
             beforeEach(module('RostRecept'));
@@ -219,6 +219,137 @@
                 expect(vote.forslag).toBeDefined();
                 expect(vote.forslagurl).toBeDefined();
                 expect(vote.voteringid).toBeDefined();
+            }));
+        });
+        describe('Queries riksdagen API for the result of a specific vote', function () {
+            var $httpBackend;
+            beforeEach(module('RostRecept'));
+            beforeEach(inject(function(_$httpBackend_){
+                $httpBackend = _$httpBackend_;
+                $httpBackend.whenJSONP(/votering/).respond(200, {
+                    "votering": {
+                        "dokvotering": {
+                            "votering": [
+                                {
+                                    "votering_id": "0FB60CF3-E44D-4908-8AEC-1D4AE1CEC4C7",
+                                    "punkt": "0",
+                                    "namn": "Susanne  Eberstein",
+                                    "intressent_id": "0235974887200",
+                                    "parti": "S",
+                                    "valkrets": "Västernorrlands län",
+                                    "valkretsnummer": "26",
+                                    "iort": null,
+                                    "rost": "Ja",
+                                    "avser": "sakfrågan",
+                                    "votering": "huvud",
+                                    "banknummer": "1",
+                                    "fornamn": "Susanne",
+                                    "efternamn": "Eberstein",
+                                    "kon": "kvinna",
+                                    "fodd": "1948",
+                                    "rm": null,
+                                    "beteckning": null,
+                                    "källa": "distribution",
+                                    "datum": "2014-04-27 00:00:00"
+                                },
+                                {
+                                    "votering_id": "0FB60CF3-E44D-4908-8AEC-1D4AE1CEC4C7",
+                                    "punkt": "0",
+                                    "namn": "Ulf  Holm",
+                                    "intressent_id": "0584183916016",
+                                    "parti": "MP",
+                                    "valkrets": "Skåne läns södra",
+                                    "valkretsnummer": "13",
+                                    "iort": null,
+                                    "rost": "Nej",
+                                    "avser": "sakfrågan",
+                                    "votering": "huvud",
+                                    "banknummer": "2",
+                                    "fornamn": "Ulf",
+                                    "efternamn": "Holm",
+                                    "kon": "man",
+                                    "fodd": "1969",
+                                    "rm": null,
+                                    "beteckning": null,
+                                    "källa": "distribution",
+                                    "datum": "2014-04-27 00:00:00"
+                                },
+                                {
+                                    "votering_id": "0FB60CF3-E44D-4908-8AEC-1D4AE1CEC4C7",
+                                    "punkt": "0",
+                                    "namn": "Jan  Ertsborn",
+                                    "intressent_id": "09812885803",
+                                    "parti": "FP",
+                                    "valkrets": "Hallands län",
+                                    "valkretsnummer": "15",
+                                    "iort": null,
+                                    "rost": "Ja",
+                                    "avser": "sakfrågan",
+                                    "votering": "huvud",
+                                    "banknummer": "3",
+                                    "fornamn": "Jan",
+                                    "efternamn": "Ertsborn",
+                                    "kon": "man",
+                                    "fodd": "1944",
+                                    "rm": null,
+                                    "beteckning": null,
+                                    "källa": "distribution",
+                                    "datum": "2014-04-27 00:00:00"
+                                },
+                                {
+                                    "votering_id": "0FB60CF3-E44D-4908-8AEC-1D4AE1CEC4C7",
+                                    "punkt": "0",
+                                    "namn": "Mats  Odell",
+                                    "intressent_id": "0700424025906",
+                                    "parti": "KD",
+                                    "valkrets": "Stockholms län",
+                                    "valkretsnummer": "2",
+                                    "iort": null,
+                                    "rost": "Frånvarande",
+                                    "avser": "sakfrågan",
+                                    "votering": "huvud",
+                                    "banknummer": "4",
+                                    "fornamn": "Mats",
+                                    "efternamn": "Odell",
+                                    "kon": "man",
+                                    "fodd": "1947",
+                                    "rm": null,
+                                    "beteckning": null,
+                                    "källa": "distribution",
+                                    "datum": "2014-04-27 00:00:00"
+                                },
+                                {
+                                    "votering_id": "0FB60CF3-E44D-4908-8AEC-1D4AE1CEC4C7",
+                                    "punkt": "0",
+                                    "namn": "Meeri  Wasberg",
+                                    "intressent_id": "0741225202024",
+                                    "parti": "S",
+                                    "valkrets": "Stockholms län",
+                                    "valkretsnummer": "2",
+                                    "iort": null,
+                                    "rost": "Ja",
+                                    "avser": "sakfrågan",
+                                    "votering": "huvud",
+                                    "banknummer": "5",
+                                    "fornamn": "Meeri",
+                                    "efternamn": "Wasberg",
+                                    "kon": "kvinna",
+                                    "fodd": "1973",
+                                    "rm": null,
+                                    "beteckning": null,
+                                    "källa": "distribution",
+                                    "datum": "2014-04-27 00:00:00"
+                                }]}}});
+            }));
+            it('It returns a list of votes per person', inject(function(voteService){
+                var votes;
+                voteService.fetchVoteResult('votering/AMockUrl.xml').then(function(data)
+                {
+                    votes = data;
+                });
+                $httpBackend.flush();
+                expect(votes).toBeDefined();
+                expect(votes.length).toBe(5);
             }));
         });
     });
