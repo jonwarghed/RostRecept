@@ -1,10 +1,10 @@
 'use strict';
 var riksdagensapi = angular.module('RostRecept');
 riksdagensapi.factory('voteService', ['$http', '$q', function ($http, $q) {
-    var votering = [];
+    var votering = [], baseURL = 'http://data.riksdagen.se/';
 
     function fetchMotion(votering) {
-        return $http.jsonp('http://data.riksdagen.se/dokumentlista/?rm=' + votering.rm + '&bet=' + votering.bet + '&utformat=jsonp&callback=JSON_CALLBACK').then(function (result) {
+        return $http.jsonp(baseURL + 'dokumentlista/?rm=' + votering.rm + '&bet=' + votering.bet + '&utformat=jsonp&callback=JSON_CALLBACK').then(function (result) {
             return result.data.dokumentlista.dokument;
         });
 
@@ -35,8 +35,28 @@ riksdagensapi.factory('voteService', ['$http', '$q', function ($http, $q) {
 
     function cleanforslag(forslag) {
         //var cleanCodes = forslag.forslag.match(/bifaller|avslår|201\d\/\d\d:\S*|yttrande(na)? \d/g, '');
+        //var stringForslag = forslag.forslag + '';
 
-        forslag.cleanCodes = forslag.forslag.match(/201\d\/\d\d:\S*/g, '');
+        var documentCodes = forslag.forslag.match(/201\d\/\d\d:\S*/g, '');
+        forslag.cleanCodes = [];
+        documentCodes.forEach(function(code)
+        {
+            //if code contains any letter then it is a motion code 02
+            if(code.match(/[A-Za-z]/))
+            {
+                code = code.replace(':','02')
+            }
+            else
+            {
+                code = code.replace(':','03')
+            }
+            code = code.replace(/2011\/12/g,'GZ');
+            code = code.replace(/2012\/13/g,'H0');
+            code = code.replace(/2013\/14/g,'H1');
+            forslag.cleanCodes.push(baseURL+'dokument/'+code);
+        });
+
+
         forslag.cleanforslag = forslag.forslag.replace(/av [^\)]*\)\s?/g, '').replace(/\s,\s/g, ', ');
     }
 
@@ -71,7 +91,7 @@ riksdagensapi.factory('voteService', ['$http', '$q', function ($http, $q) {
                 return fetchUtskottsforslag(motion, singlevotering)
             }).then(function (forslag) {
                 cleanforslag(forslag);
-                return { summary: forslag.rubrik, forslag: forslag.cleanforslag, forslagurl: [], voteringid: forslag.votering_id, votering_url_xml: forslag.votering_url_xml, orginalvotering: singlevotering.forslagspunkt};
+                return { summary: forslag.rubrik, forslag: forslag.cleanforslag, forslagurl: forslag.cleanCodes, voteringid: forslag.votering_id, votering_url_xml: forslag.votering_url_xml, orginalvotering: singlevotering.forslagspunkt};
             });
         },
         fetchVoteResult: function (votering_url_xml) {
