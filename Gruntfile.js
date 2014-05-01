@@ -314,7 +314,15 @@ module.exports = function(grunt) {
           cwd: '.tmp/images',
           dest: '<%= yo.dist %>/images',
           src: ['generated/*']
-        }]
+        },
+            {
+                expand: true,
+                flatten: true,
+                cwd: '<%= yo.app %>',
+                dest: '<%= yo.dist %>/fonts',
+                src: ['bower_components/bootstrap/fonts/*.*']
+            }
+        ]
       },
       styles: {
         expand: true,
