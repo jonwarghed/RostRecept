@@ -43,7 +43,7 @@ module.exports = function(grunt) {
       // },
       jsTest: {
         files: ['test/spec/{,*/}*.js'],
-        tasks: ['newer:jshint:test', 'karma']
+        tasks: ['newer:test', 'karma']
       },
       less: {
         files: ['<%= yo.app %>/styles/{,*/}*.less'],
@@ -100,22 +100,22 @@ module.exports = function(grunt) {
     },
 
     // Make sure code styles are up to par and there are no obvious mistakes
-    jshint: {
-      options: {
-        jshintrc: '.jshintrc',
-        reporter: require('jshint-stylish')
-      },
-      all: [
-        'Gruntfile.js',
-        '<%= yo.app %>/scripts/{,*/}*.js'
-      ],
-      test: {
-        options: {
-          jshintrc: 'test/.jshintrc'
-        },
-        src: ['test/spec/{,*/}*.js']
-      }
-    },
+//    jshint: {
+//      options: {
+//        jshintrc: '.jshintrc',
+//        reporter: require('jshint-stylish')
+//      },
+//      all: [
+//        'Gruntfile.js',
+//        '<%= yo.app %>/scripts/{,*/}*.js'
+//      ],
+//      test: {
+//        options: {
+//          jshintrc: 'test/.jshintrc'
+//        },
+//        src: ['test/spec/{,*/}*.js']
+//      }
+//    },
 
     // Empties folders to start fresh
     clean: {
@@ -400,7 +400,7 @@ module.exports = function(grunt) {
   ]);
 
   grunt.registerTask('default', [
-    'newer:jshint',
+    'newer',
     'test',
     'build'
   ]);

@@ -13,7 +13,6 @@ angular.module('RostRecept').factory('votingresultService',[function(){
             govermentVotes[id] = votes;
         },
         resultOfVote: function(id){
-            //this should be made asynchronous
             //var promise = new Promise(function(resolve,reject)
             //{
 

@@ -352,5 +352,25 @@
                 expect(votes.length).toBe(5);
             }));
         });
+
+        describe('Queries riksdagen API for a single motion', function () {
+            var $httpBackend,text;
+            beforeEach(module('RostRecept'));
+            beforeEach(inject(function (_$httpBackend_) {
+                $httpBackend = _$httpBackend_;
+                $httpBackend.whenGET(/dokument/).respond(200, 'This should be a loong text')
+
+            }));
+
+            it('Should retrieve a motion when called',inject(function(voteService){
+                voteService.fetchTextForMotion('dokument').then(function(response)
+                {
+                    text = response.data;
+                });
+                $httpBackend.flush();
+                expect(text).toBe('This should be a loong text')
+            }));
+        });
+
     });
 })();

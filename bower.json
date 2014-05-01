@@ -5,12 +5,12 @@
   "keywords": [
     "angular"
   ],
-  "homepage": "https://github.com/mgcrea/rost",
-  "bugs": "https://github.com/mgcrea/rost/issues",
+  "homepage": "https://github.com/jon.warghed/rostrecept",
+  "bugs": "https://github.com/jon.warghed/rost/issues",
   "author": {
-    "name": "Olivier Louvignes",
-    "email": "olivier@mg-crea.com",
-    "url": "https://github.com/mgcrea"
+    "name": "Jon Warghed",
+    "email": "jon.warghed@gmail.com",
+    "url": ""
   },
   "repository": {
     "type": "git",
@@ -26,5 +26,9 @@
     "angular-animate": "~1.2.10",
     "angular-route": "~1.2.10",
     "angular": "~1.2.10"
+  },
+  "devDependencies": {
+    "angular-mocks": "~1.2.16",
+    "underscore": "~1.6.0"
   }
 }

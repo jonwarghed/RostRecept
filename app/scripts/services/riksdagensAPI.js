@@ -24,13 +24,21 @@ riksdagensapi.factory('voteService', ['$http', '$q', function ($http, $q) {
     function fetchUtskottsforslag(motion, votering) {
         var deferred = $q.defer();
         //there is a URL to the dokument but make it JSONP
-        var url = motion.dokumentstatus_url_xml.replace('.xml', '.jsonp');
+        var url = motion.dokumentstatus_url_xml.replace('.xml', '.jsonp?callback=JSON_CALLBACK');
         var utskottsurl = url.replace('dokumentstatus', 'utskottsforslag');
         $http.jsonp(utskottsurl).success(function (data) {
-            var utskottsforslag = data.utskottsforslag.dokutskottsforslag.utskottsforslag.filter(function (element) {
-                return element.punkt == votering.punkt;
-            });
-            deferred.resolve(utskottsforslag[0]);
+            //they generate incorrect JSON here too sometimes array, sometimes not.
+            var utskottsforslag = data.utskottsforslag.dokutskottsforslag.utskottsforslag;
+            if(Array.isArray(utskottsforslag)) {
+                var utskottsforslag = utskottsforslag.filter(function (element) {
+                    return element.punkt == votering.punkt;
+                });
+                deferred.resolve(utskottsforslag[0]);
+            }
+            else
+            {
+                deferred.resolve(utskottsforslag);
+            }
 
         });
         //This is a hack due to incorrect callback method should be the above if correct
@@ -120,7 +128,7 @@ riksdagensapi.factory('voteService', ['$http', '$q', function ($http, $q) {
         },
         fetchVoteResult: function (votering_url_xml) {
                 var deferred = $q.defer();
-                //there is a URL to the dokument but make it JSONP
+                //there is a URL to the dokument but make it JSONP callback does not work
                 var url =votering_url_xml +  '.jsonp';
 
                 $http.jsonp(url).success(function (data) {
@@ -145,6 +153,13 @@ riksdagensapi.factory('voteService', ['$http', '$q', function ($http, $q) {
                 }
 
                 return deferred.promise;
-            }
+            },
+        fetchTextForMotion: function(text_url)
+        {
+            return $http.get(text_url).success(function(response)
+            {
+                return response.data;
+            });
+        }
         };
     }]);

@@ -1,6 +1,6 @@
 'use strict';
 
-angular.module('RostRecept', ['ngAnimate', 'ngRoute'])
+var myApp = angular.module('RostRecept', ['ngAnimate', 'ngRoute'])
   .constant('version', 'v0.1.0')
   .config(function($locationProvider, $routeProvider) {
 
@@ -22,3 +22,6 @@ angular.module('RostRecept', ['ngAnimate', 'ngRoute'])
 
   });
 
+myApp.config(['$httpProvider', function($httpProvider) {
+   $httpProvider.defaults.useXDomain = true;
+}]);

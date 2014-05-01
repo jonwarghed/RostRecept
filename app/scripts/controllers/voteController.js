@@ -9,9 +9,7 @@ angular.module('RostRecept').controller('voteCtrl', ['$scope', 'voteService', 'v
         getnextVote().then(getnextVote);
     });
 
-
     function fetchGovermentVote(vote) {
-
         var voterings_id = vote.voteringid;
         voteService.fetchVoteResult(vote.votering_url_xml).then(function (data) {
             votingresultService.addGovermentVote(voterings_id, data);
@@ -24,13 +22,28 @@ angular.module('RostRecept').controller('voteCtrl', ['$scope', 'voteService', 'v
         return vote;
     }
 
+    function splitForslag(vote)
+    {
+        return vote;
+        var texts;
+        vote.forslagurl.forEach(function(url)
+        {
+           voteService.fetchTextForMotion(url).then(function(data)
+           {
+               texts = data;
+           })
+        });
+    }
+
 
     function getnextVote() {
         if (undefined != $scope.next.vote) {
             $scope.vote = $scope.next.vote;
         }
-        return voteService.fetchVote().then(preloadVote).then(fetchGovermentVote);
+        return voteService.fetchVote().then(preloadVote).then(fetchGovermentVote).then(splitForslag);
     };
+
+
 
     function handleVote(result) {
         var votering_id = $scope.vote.voteringid;
@@ -41,14 +54,10 @@ angular.module('RostRecept').controller('voteCtrl', ['$scope', 'voteService', 'v
 
     $scope.agreeWithVote = function () {
         handleVote('Ja')
-
     };
 
     $scope.disagreeWithVote = function () {
         handleVote('Nej')
     };
 
-    $scope.random = function(){
-            return 0.5 - Math.random();
-    };
 }]);
