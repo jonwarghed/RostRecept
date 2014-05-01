@@ -6,7 +6,7 @@
   <div class="btn btn-lg btn-default" ng-click="agreeWithVote()">I agree completly</div>
   <div class="btn btn-lg btn-default" ng-click="disagreeWithVote()">Are you mad? We will all be ruined</div>
 </p>
-<div ng-repeat="votering in voteringinformation | limitTo: 5">
+<div ng-repeat="votering in voteringinformation | orderBy: 'randomNumber' | limitTo: 5">
     <p class="lead">{{votering.namn}} ({{votering.parti}}) agreed with you</p>
 </div>
 <p>{{vote}}</p>

@@ -47,4 +47,8 @@ angular.module('RostRecept').controller('voteCtrl', ['$scope', 'voteService', 'v
     $scope.disagreeWithVote = function () {
         handleVote('Nej')
     };
+
+    $scope.random = function(){
+            return 0.5 - Math.random();
+    };
 }]);

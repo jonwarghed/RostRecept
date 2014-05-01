@@ -1,7 +1,19 @@
 'use strict';
 var riksdagensapi = angular.module('RostRecept');
 riksdagensapi.factory('voteService', ['$http', '$q', function ($http, $q) {
-    var votering = [], baseURL = 'http://data.riksdagen.se/';
+    var votering = [], baseURL = 'http://data.riksdagen.se/', utskottsforslagFunction, voteringresultatFunction;
+    //This hack solves the incorrect callbacks.
+    window.rdjsonp = function (data) {
+        if(data.votering != undefined)
+        {
+            voteringresultatFunction(data);
+        }
+        if(data.utskottsforslag != undefined)
+        {
+            utskottsforslagFunction(data);
+        }
+
+    };
 
     function fetchMotion(votering) {
         return $http.jsonp(baseURL + 'dokumentlista/?rm=' + votering.rm + '&bet=' + votering.bet + '&utformat=jsonp&callback=JSON_CALLBACK').then(function (result) {
@@ -9,7 +21,6 @@ riksdagensapi.factory('voteService', ['$http', '$q', function ($http, $q) {
         });
 
     }
-
     function fetchUtskottsforslag(motion, votering) {
         var deferred = $q.defer();
         //there is a URL to the dokument but make it JSONP
@@ -23,7 +34,18 @@ riksdagensapi.factory('voteService', ['$http', '$q', function ($http, $q) {
 
         });
         //This is a hack due to incorrect callback method should be the above if correct
-        window.rdjsonp = function (data) {
+//        window.rdjsonp = function (data) {
+//
+//
+//            var utskottsforslag = data.utskottsforslag.dokutskottsforslag.utskottsforslag.filter(function (element) {
+//                return element.punkt == votering.punkt;
+//            });
+//            //There can only be one!
+//            deferred.resolve(utskottsforslag[0]);
+//        };
+
+
+        utskottsforslagFunction = function (data) {
             var utskottsforslag = data.utskottsforslag.dokutskottsforslag.utskottsforslag.filter(function (element) {
                 return element.punkt == votering.punkt;
             });
@@ -69,6 +91,8 @@ riksdagensapi.factory('voteService', ['$http', '$q', function ($http, $q) {
         });
     }
 
+
+
     return {
         //Production value
         //years: ['2013%2F14', '2012%2F13', '2011%2F12'],
@@ -101,13 +125,25 @@ riksdagensapi.factory('voteService', ['$http', '$q', function ($http, $q) {
 
                 $http.jsonp(url).success(function (data) {
                     var voteringResult = data.votering.dokvotering.votering;
+                    voteringResult.forEach(function(votering)
+                    {
+                        votering.randomNumber = Math.random();
+                    });
                     deferred.resolve(voteringResult);
                 });
                 //This is a hack due to incorrect callback method should be the above if correct
-                window.rdjsonp = function (data) {
+//                window.rdjsonp = function (data) {
+//
+//                };
+                voteringresultatFunction = function(data) {
                     var voteringResult = data.votering.dokvotering.votering;
-                    deferred.resolve(voteringResult);
-                };
+                    voteringResult.forEach(function(votering)
+                   {
+                        votering.randomNumber = Math.random();
+                   });
+                   deferred.resolve(voteringResult);
+                }
+
                 return deferred.promise;
             }
         };

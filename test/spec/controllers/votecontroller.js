@@ -93,6 +93,11 @@
                 expect($scope.next.vote).toBeDefined();
             });
 
+            it('The list of voterings information should be possible to order randomly')
+            {
+                //TODO: Is this even testable, should it be here? Is it an E2E test?
+            }
+
 
         });
     });
