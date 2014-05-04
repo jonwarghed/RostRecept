@@ -172,3 +172,35 @@ body {
     width: 700px;
   }
 }
+.voteresult-animate.ng-enter,
+.voteresult-animate.ng-leave,
+.voteresult-animate.ng-move {
+  -webkit-transition: 0.5s linear all;
+  transition: 0.5s linear all;
+  position:relative;
+}
+
+.voteresult-animate.ng-enter {
+  left:-10px;
+  opacity:0;
+}
+.voteresult-animate.ng-enter.ng-enter-active {
+  left:0;
+  opacity:1;
+}
+
+.voteresult-animate.ng-leave {
+  left:0;
+  opacity:1;
+}
+.voteresult-animate.ng-leave.ng-leave-active {
+  left:-10px;
+  opacity:0;
+}
+
+.voteresult-animate.ng-move {
+  opacity:0.5;
+}
+.voteresult-animate.ng-move.ng-move-active {
+  opacity:1;
+}

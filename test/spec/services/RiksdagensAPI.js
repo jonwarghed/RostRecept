@@ -217,7 +217,6 @@
                 expect(vote).toBeDefined();
                 expect(vote.summary).toBeDefined();
                 expect(vote.forslag).toBeDefined();
-                expect(vote.forslagurl).toBeDefined();
                 expect(vote.voteringid).toBeDefined();
             }));
         });
@@ -354,21 +353,52 @@
         });
 
         describe('Queries riksdagen API for a single motion', function () {
-            var $httpBackend,text;
+            var $httpBackend,forslag;
             beforeEach(module('RostRecept'));
             beforeEach(inject(function (_$httpBackend_) {
                 $httpBackend = _$httpBackend_;
-                $httpBackend.whenGET(/dokument/).respond(200, 'This should be a loong text')
+                $httpBackend.whenJSONP(/dokumentstatus/).respond(200, '{"dokumentstatus":{"dokument":{"hangar_id":"2878842","dok_id":"H102So1","rm":"2013/14","beteckning":"So1","typ":"mot","subtyp":"Kommittémotion","doktyp":"mot","tempbeteckning":"V1","organ":"SoU","mottagare":null,"nummer":"1","slutnummer":"0","datum":"2013-09-19 00:00:00","systemdatum":"2013-09-30 16:47:28","publicerad":"2013-09-30 16:47:29","titel":"med anledning av prop. 2012/13:175 Vissa frågor om behörighet för personal i hälso- och sjukvården och socialtjänsten","subtitel":"av Eva Olofsson m.fl. (V)","status":"Ank T","htmlformat":null,"relaterat_id":null,"source":null,"sourceid":"{86978FD8-F660-4032-92E4-A862F9F015CE}","dokument_url_text":"http://data.riksdagen.se/dokument/H102So1/text","dokument_url_html":"http://data.riksdagen.se/dokument/H102So1","dokumentstatus_url_xml":"http://data.riksdagen.se/dokumentstatus/H102So1"},"dokaktivitet":{"aktivitet":[{"kod":"HÄN","namn":"Hänvisning","datum":"2013-09-27 00:00:00","status":"inträffat","ordning":"2","process":"hanvisning"},{"kod":"HÄN","namn":"Hänvisning","datum":"2013-09-27 00:00:00","status":"planerat","ordning":"2","process":"hanvisning"},{"kod":"B","namn":"Bordläggning","datum":"2013-09-26 00:00:00","status":"inträffat","ordning":"1","process":"hanvisning"},{"kod":"B","namn":"Bordläggning","datum":"2013-09-26 00:00:00","status":"planerat","ordning":"1","process":"hanvisning"},{"kod":"INL","namn":"Inlämning","datum":"2013-09-19 00:00:00","status":"inträffat","ordning":"13","process":"hantering"},{"kod":"MOTT","namn":"Överföring","datum":"2013-09-19 00:00:00","status":"inträffat","ordning":"1","process":"hantering"}]},"dokintressent":{"intressent":[{"intressent_id":"0902086611116","namn":"Eva Olofsson","partibet":"V","ordning":"1","roll":"undertecknare"},{"intressent_id":"0188653245302","namn":"Bengt Berg","partibet":"V","ordning":"2","roll":"undertecknare"},{"intressent_id":"0679667648714","namn":"Marianne Berg","partibet":"V","ordning":"3","roll":"undertecknare"},{"intressent_id":"0545353563812","namn":"Amineh Kakabaveh","partibet":"V","ordning":"4","roll":"undertecknare"},{"intressent_id":"0371688419616","namn":"Lars Ohly","partibet":"V","ordning":"5","roll":"undertecknare"},{"intressent_id":"0615338062910","namn":"Lena Olsson","partibet":"V","ordning":"6","roll":"undertecknare"},{"intressent_id":"0415959965211","namn":"Mia Sydow Mölleby","partibet":"V","ordning":"7","roll":"undertecknare"}]},"dokforslag":{"forslag":[{"nummer":"1","beteckning":"1","lydelse":"Riksdagen tillkännager för regeringen som sin mening vad som anförs i motionen om att regeringen snarast bör återkomma med förslag om hur antalet och andelen specialistsjuksköterskor ska öka.","lydelse2":null,"utskottet":" Avslag","kammaren":"Avslag","behandlas_i":"2013/14:SoU10","kammarbeslutstyp":"Röstning"},{"nummer":"2","beteckning":"2","lydelse":"Riksdagen tillkännager för regeringen som sin mening vad som anförs i motionen om att regeringen bör återkomma med förslag om krav på utbildning inom den sociala barn- och ungdomsvården.","lydelse2":null,"utskottet":" Avslag","kammaren":"Avslag","behandlas_i":"2013/14:SoU2","kammarbeslutstyp":"Röstning"},{"nummer":"3","beteckning":"3","lydelse":"Riksdagen tillkännager för regeringen som sin mening vad som anförs i motionen om introduktion inom den sociala barn- och ungdomsvården.","lydelse2":null,"utskottet":" Avslag","kammaren":"Avslag","behandlas_i":"2013/14:SoU2","kammarbeslutstyp":"Röstning"},{"nummer":"4","beteckning":"4","lydelse":"Riksdagen tillkännager för regeringen som sin mening vad som anförs i motionen om att det på sikt bör bli en lagstadgad skyldighet för socialnämnden att ha tillgång till specialistkompetens inom den sociala barn- och ungdomsvården.","lydelse2":null,"utskottet":" Avslag","kammaren":"Avslag","behandlas_i":"2013/14:SoU2","kammarbeslutstyp":"Röstning"},{"nummer":"5","beteckning":"5","lydelse":"Riksdagen tillkännager för regeringen som sin mening vad som anförs i motionen om att tandhygienistutbildningen bör förlängas med ett år.","lydelse2":null,"utskottet":" Bifall","kammaren":"Bifall","behandlas_i":"2013/14:SoU2","kammarbeslutstyp":"Acklamation"}]},"dokuppgift":{"uppgift":[{"kod":"motkat","namn":"Motionskategori","text":"Följdmotion"},{"kod":"motgrund","namn":"Motionsgrund","text":"Proposition 2012/13:175"},{"kod":"tilldelat","namn":"Tilldelat","text":"Socialutskottet"}]},"dokbilaga":{"bilaga":{"dok_id":"H102So1","titel":"med anledning av prop. 2012/13:175 Vissa frågor om behörighet för personal i hälso- och sjukvården och socialtjänsten","subtitel":"av Eva Olofsson m.fl. (V)","filnamn":"MOT_201314_So_1.doc","filstorlek":"68096","filtyp":"doc","fil_url":"http://data.riksdagen.se/fil/DE731B44-FF6C-4596-8EAE-DE09099CAAE4"}},"dokreferens":null}}')
 
             }));
 
             it('Should retrieve a motion when called',inject(function(voteService){
                 voteService.fetchTextForMotion('dokument').then(function(response)
                 {
-                    text = response.data;
+                    forslag = response;
                 });
                 $httpBackend.flush();
-                expect(text).toBe('This should be a loong text')
+
+                expect(forslag.length).toBe(5);
+            }));
+
+            it('Should single number filter related motion',inject(function(voteService){
+                voteService.fetchTextForMotion('dokument', ['1'], true).then(function(response)
+                {
+                    forslag = response;
+                });
+                $httpBackend.flush();
+                expect(forslag.length).toBe(1);
+                expect(forslag[0].dokumentCode).toBe('dokument');
+                expect(forslag[0].yrkande).toBe('1');
+                expect(forslag[0].summary).toBeDefined();
+                expect(forslag[0].avslag).toBe(true);
+            }));
+
+            it('Should array filter related motion',inject(function(voteService){
+                voteService.fetchTextForMotion('dokument', ['1','2'], false).then(function(response)
+                {
+                    forslag = response;
+                });
+                $httpBackend.flush();
+                expect(forslag.length).toBe(2);
+                expect(forslag[0].dokumentCode).toBe('dokument');
+                expect(forslag[0].yrkande).toBe('1');
+                expect(forslag[0].summary).toBeDefined();
+                expect(forslag[0].avslag).toBe(false);
+                expect(forslag[1].dokumentCode).toBe('dokument');
+                expect(forslag[1].yrkande).toBe('2');
+                expect(forslag[1].summary).toBeDefined();
+                expect(forslag[1].avslag).toBe(false);
             }));
         });
 
