@@ -5,24 +5,26 @@ A little program that interacts with Riksdagens API to find what your riksdagsma
 
 Written using angular and is all client side with the REST API found at [data.riksdagen.se](http://data.riksdagen.se).
 
-Install node.js
+Install [node.js](http://nodejs.org)
+
+Clone the repository.
 
 Go to the folder for the project.
 
-First time run:
-`npm install -g karma`
-`npm install -g grunt-cli`
-`npm install -g bower`
-`npm install`
+First time run:<br>
+`npm install -g karma`<br>
+`npm install -g grunt-cli`<br>
+`npm install -g bower`<br>
+`npm install`<br>
 `bower install`
 
-To run tests
+To run tests<br>
 `grunt tests`
 
-To run the server
+To run the server<br>
 `grunt serve`
 
-To build
+To build<br>
 `grund build`
 
-Programmed in webstorm.
+Developed using Webstorm.
