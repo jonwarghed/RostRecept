@@ -16,6 +16,7 @@ angular.module('RostRecept').factory('votingresultService',[function(){
         resultOfVote: function(id){
 
             var userVote = userVotes[id];
+
             var govermentVotesforID = govermentVotes[id];
             if(null == govermentVotesforID) {
                 return;

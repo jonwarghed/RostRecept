@@ -35,9 +35,12 @@ riksdagensapi.factory('voteService', ['$http', '$q', function ($http, $q) {
     function fetchUtskottsforslag(motion, votering) {
         var deferred = $q.defer();
         //there is a URL to the dokument but make it JSONP
-        var url = motion.dokumentstatus_url_xml.replace('.xml', '.jsonp?callback=JSON_CALLBACK');
-        var utskottsurl = url.replace('dokumentstatus', 'utskottsforslag');
-        $http.jsonp(utskottsurl).success(function (data) {
+        //var url = motion.dokumentstatus_url_xml.replace('.xml', '.jsonp?callback=JSON_CALLBACK');
+        //var utskottsurl = url.replace('dokumentstatus', 'utskottsforslag');
+
+        var url = baseURL + 'utskottsforslag/' + motion.dok_id + '.jsonp?callback=JSON_CALLBACK';
+
+        $http.jsonp(url).success(function (data) {
             utskottsforslagFunction(data);
         });
         utskottsforslagFunction = function (data) {
@@ -88,9 +91,9 @@ riksdagensapi.factory('voteService', ['$http', '$q', function ($http, $q) {
             });
             return $q.all(promises);
         },
-        fetchVote: function () {            //Select a random vote
-
+        fetchVote: function () {           //Select a random vote
             var singlevotering = votering.splice(Math.floor(Math.random() * this.votering.length), 1)[0];
+
             return fetchMotion(singlevotering).then(function (motion) {
                 return fetchUtskottsforslag(motion, singlevotering)
             }).then(function (forslag) {
@@ -105,7 +108,6 @@ riksdagensapi.factory('voteService', ['$http', '$q', function ($http, $q) {
 
                 $http.jsonp(url).success(function (data) {
                     voteringresultatFunction(data);
-
                 });
                 voteringresultatFunction = function(data) {
                     var voteringResult = data.votering.dokvotering.votering;
@@ -121,9 +123,10 @@ riksdagensapi.factory('voteService', ['$http', '$q', function ($http, $q) {
         fetchTextForMotion: function(dokumenstatusID,yrkande,avslag)
         {
             var deferred = $q.defer();
-            if(dokumenstatusID == null)
+            if(!dokumenstatusID)
             {
-                console.warn(dokumenstatusID + yrkande + avslag);
+                //debugger;
+                console.log('dokumentstatusID was not found for motion');
                 return;
             }
             var utskottsurl  = baseURL + 'dokumentstatus/' + dokumenstatusID + '.jsonp';
@@ -146,7 +149,7 @@ riksdagensapi.factory('voteService', ['$http', '$q', function ($http, $q) {
                     }
                     forslag.forEach(function(lydelse)
                     {
-                        temp.push({dokumentCode: dokumenstatusID, yrkande: lydelse.nummer, summary: lydelse.lydelse, avslag : avslag});
+                        temp.push({dokumentCode: dokumenstatusID, yrkande: lydelse.nummer, summary: lydelse.lydelse, avslag : avslag, dokument_url_html : data.dokumentstatus.dokument.dokument_url_text});
                     });
                     promise.resolve(temp);
                 }

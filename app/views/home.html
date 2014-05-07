@@ -1,20 +1,21 @@
 <div ng-controller="voteCtrl">
-    <h1 class="cover-heading" ng-hide="vote != null || vote.parsedForslag.length <= 0">Kopplar upp sig mot riksdagen</h1>
-    <div id="vote" class="col-xs-12 col-sm-6 col-sm-offset-3 col-lg-offset-3 col-lg-6" ng-hide="vote == null || vote.parsedForslag.length <= 0">
+    <h1 class="cover-heading" ng-hide="initialized == true">Kopplar upp sig mot riksdagen</h1>
+    <div id="vote" class="col-xs-12 col-sm-6 col-sm-offset-3 col-lg-offset-3 col-lg-6" ng-hide="initialized == false">
         <div class="panel panel-default" ng-switch on="vote">
             <div class="panel-heading">
                 <h3 class="panel-title">{{vote.titel}}</h3>
-                <h3 class="panel-title">{{vote.summary}}</h3>
+                <h3 class="panel-title" ng-hide="vote.titel == vote.summary">{{vote.summary}}</h3>
             </div>
             <div class="panel-body">
                <p ng-hide="true">{{vote.forslag}}</p>
-               <div ng-repeat="parsedForslag in vote.parsedForslag">
+               <div class="row voteresult-animate" ng-repeat="parsedForslag in vote.parsedForslag">
                    <p>{{parsedForslag.summary}}</p>
+                   <a class="btn btn-default btn-lg active" ng-href="{{parsedForslag.dokument_url_html}}" target="_blank">Mer</a>
                </div>
-                <div class="btn btn-sm btn-success col-xs-6 col-md-4 col-md-offset-2" ng-click="agreeWithVote()">
+                <div class="btn btn-sm btn-success col-xs-6 col-md-4 col-md-offset-2" ng-click="processingVote || agreeWithVote()" ng-disabled="processingVote">
                     <span class="glyphicon glyphicon-thumbs-up"></span>
                     <p class="hidden-xs visible-lg">I agree completly</p></div>
-                <div class="btn btn-sm btn-danger col-xs-6 col-md-4" ng-click="disagreeWithVote()">
+                <div class="btn btn-sm btn-danger col-xs-6 col-md-4" ng-click="processingVote || disagreeWithVote()" ng-disabled="processingVote">
                     <span class="glyphicon glyphicon-thumbs-down"></span>
                     <p class="hidden-xs visible-lg">Are you mad?</p>
                 </div>
@@ -25,10 +26,10 @@
             <div class="panel panel-default">
                 <div class="panel-heading">
                     <h3 class="panel-title">{{voteringinformation.titel}}</h3>
-                    <h3 class="panel-title">{{voteringinformation.summary}}</h3>
+                    <h3 class="panel-title" ng-hide="vote.titel == vote.summary">{{voteringinformation.summary}}</h3>
                 </div>
                 <div class="panel col-sm-12">
-                    <div ng-repeat="votering in voteringinformation | orderBy: 'randomNumber' | limitTo: 3" class="row">
+                    <div ng-repeat="votering in voteringinformation | orderBy: 'randomNumber' | limitTo: 3" class="row voteresult-animate">
                         <img class="img-responsive img-circle col-sm-offset-2 col-sm-1" ng-src="http://data.riksdagen.se/filarkiv/bilder/ledamot/{{votering.intressent_id}}_80.jpg" />
                         <p class="col-xs-9 col-sm-7"> {{votering.namn}} ({{votering.parti}}) röstade som dig</p>
                     </div>
@@ -38,7 +39,7 @@
     </div>
 
 
-    <div id="totalvoteresult" class="col-xs-12 col-sm-3 col-lg-3 " ng-hide="totalResult == null">
+    <div id="totalvoteresult" class="col-xs-12 col-sm-3 col-lg-3 " ng-hide="initialized == false">
         <div class="panel panel-default">
         <div class="panel-heading">
             <h3 class="panel-title">Du har röstat mest som</h3>

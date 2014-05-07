@@ -73,7 +73,9 @@ angular.module('RostRecept').factory('forslagParser',[function(){
             });
 
             //push information gathered so far;
-            parsed.push({dokumentCode: dokumentCode, yrkande : yrkande, avslag : avslag});
+            if(dokumentCode != '') {
+                parsed.push({dokumentCode: dokumentCode, yrkande: yrkande, avslag: avslag});
+            }
             return parsed;
         }
     };

@@ -106,6 +106,31 @@
         });
 
 
+        describe('parsing TestString 4',function (){
+            //todo: I have no idea how to parse this sentence
+            var inputString =  "Riksdagen antar förslaget till lag om ändring i lagen (2002:546) om behandling yrkande 3";
+            var result;
+
+            beforeEach(module('RostRecept'));
+            beforeEach(inject(function(forslagParser){
+                result = forslagParser.parse(inputString);
+            }));
+            it('Should create 3 forslag',function(forslagParser){
+            //    expect(result).toBeDefined();
+             //   expect(result.length).toBe(1);
+
+            });
+            it('Law 1 should be correctly parsed',function(forslagParser){
+                //Riksdagen antar förslaget till lag om ändring i lagen (2002:546) om behandling yrkande 3
+             //   expect(result[0].dokumentCode).toBe('H10376');
+             //   expect(result[0].yrkande[0]).toBe('1');
+            //    expect(result[0].avslag).toBe(false);
+            });
+        });
+
+
+
+
 
     });
 })();
